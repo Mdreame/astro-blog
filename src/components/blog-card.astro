@@ -25,69 +25,70 @@ const authors = await parseAuthors(entry.data.authors ?? [])
 const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
 ---
 
-<div
-  class="relative rounded-xl border p-4 transition-colors duration-300 ease-in-out"
-  style={`background-image: url('${entry.data.image}'); background-size: cover; background-position: center;`}
->
-  <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
-  <Link
-    href={`/${entry.collection}/${entry.id}`}
-    class="relative z-10 flex flex-col gap-4 sm:flex-row"
-  >
-    <div class="grow">
-      <h3 class="mb-1 text-lg font-medium text-white">{entry.data.title}</h3>
-      <p class="text-white/80 mb-2 text-sm">{entry.data.description}</p>
-
-      <div
-        class="text-white/80 mb-2 flex flex-wrap items-center gap-x-2 text-xs"
-      >
+<div class="relative rounded-xl border p-4 transition-colors duration-300 ease-in-out overflow-hidden">
+  <div
+    class="absolute inset-0 rounded-xl"
+    style={`background-image: url('${entry.data.image}'); background-size: 120%; background-position: center; filter: blur(3px) brightness(0.7);`}
+  ></div>
+  <div class="absolute inset-0 bg-black/30 rounded-xl"></div>
+  <div class="relative z-10">
+    <Link
+      href={`/${entry.collection}/${entry.id}`}
+      class="flex flex-col gap-4 sm:flex-row"
+    >
+      <div class="grow">
+        <h3 class="mb-1 text-lg font-medium text-gray-100 drop-shadow-md">{entry.data.title}</h3>
+        <p class="text-gray-200 mb-2 text-sm drop-shadow-md">{entry.data.description}</p>
+        <div
+          class="text-gray-300 mb-2 flex flex-wrap items-center gap-x-2 text-xs"
+        >
+          {
+            authors.length > 0 && (
+              <>
+                {authors.map((author) => (
+                  <div class="flex items-center gap-x-1.5">
+                    <AvatarComponent
+                      client:load
+                      src={author.avatar}
+                      alt={author.name}
+                      fallback={author.name[0]}
+                      className="size-5 rounded-full"
+                    />
+                    <span>{author.name}</span>
+                  </div>
+                ))}
+                <Separator orientation="vertical" className="h-4!" />
+              </>
+            )
+          }
+          <span>{formattedDate}</span>
+          <Separator orientation="vertical" className="h-4!" />
+          <span>{readTime}</span>
+          {
+            subpostCount > 0 && (
+              <>
+                <Separator orientation="vertical" className="h-4!" />
+                <span class="flex items-center gap-1">
+                  <Icon name="lucide:file-text" class="size-3" />
+                  {subpostCount} subpost{subpostCount === 1 ? '' : 's'}
+                </span>
+              </>
+            )
+          }
+        </div>
         {
-          authors.length > 0 && (
-            <>
-              {authors.map((author) => (
-                <div class="flex items-center gap-x-1.5">
-                  <AvatarComponent
-                    client:load
-                    src={author.avatar}
-                    alt={author.name}
-                    fallback={author.name[0]}
-                    className="size-5 rounded-full"
-                  />
-                  <span>{author.name}</span>
-                </div>
+          entry.data.tags && (
+            <div class="flex flex-wrap gap-2">
+              {entry.data.tags.map((tag) => (
+                <Badge variant="muted" className="flex items-center gap-x-1">
+                  <Icon name="lucide:hash" class="size-3" />
+                  {tag}
+                </Badge>
               ))}
-              <Separator orientation="vertical" className="h-4!" />
-            </>
-          )
-        }
-        <span>{formattedDate}</span>
-        <Separator orientation="vertical" className="h-4!" />
-        <span>{readTime}</span>
-        {
-          subpostCount > 0 && (
-            <>
-              <Separator orientation="vertical" className="h-4!" />
-              <span class="flex items-center gap-1">
-                <Icon name="lucide:file-text" class="size-3" />
-                {subpostCount} subpost{subpostCount === 1 ? '' : 's'}
-              </span>
-            </>
+            </div>
           )
         }
       </div>
-
-      {
-        entry.data.tags && (
-          <div class="flex flex-wrap gap-2">
-            {entry.data.tags.map((tag) => (
-              <Badge variant="muted" className="flex items-center gap-x-1">
-                <Icon name="lucide:hash" class="size-3" />
-                {tag}
-              </Badge>
-            ))}
-          </div>
-        )
-      }
-    </div>
-  </Link>
+    </Link>
+  </div>
 </div>
