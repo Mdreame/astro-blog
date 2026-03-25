@@ -40,7 +40,7 @@ const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
         <h3 class="mb-1 text-lg font-medium text-gray-100 drop-shadow-md">{entry.data.title}</h3>
         <p class="text-gray-200 mb-2 text-sm drop-shadow-md">{entry.data.description}</p>
         <div
-          class="text-gray-300 mb-2 flex flex-wrap items-center gap-x-2 text-xs"
+          class="text-gray-300 flex flex-wrap items-center gap-x-2 text-xs"
         >
           {
             authors.length > 0 && (
@@ -76,7 +76,7 @@ const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
             )
           }
         </div>
-        {
+        <!-- {
           entry.data.tags && (
             <div class="flex flex-wrap gap-2">
               {entry.data.tags.map((tag) => (
@@ -87,7 +87,7 @@ const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
               ))}
             </div>
           )
-        }
+        } -->
       </div>
     </Link>
   </div>
