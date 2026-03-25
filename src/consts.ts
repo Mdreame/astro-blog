@@ -1,14 +1,14 @@
 import type { IconMap, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
-  title: 'astro-erudite',
+  title: 'mdreame',
   description:
-    'astro-erudite is a opinionated, unstyled blogging template—built with Astro, Tailwind, and shadcn/ui.',
-  href: 'https://astro-erudite.vercel.app',
-  author: 'jktrn',
-  locale: 'en-US',
+    '百龄影徂，千载心在。',
+  href: 'https://blog.mdreame.space',
+  author: 'mdreame',
+  locale: 'zh-CN',
   featuredPostCount: 2,
-  postsPerPage: 3,
+  postsPerPage: 5,
 }
 
 export const NAV_LINKS: SocialLink[] = [
@@ -16,9 +16,13 @@ export const NAV_LINKS: SocialLink[] = [
     href: '/blog',
     label: 'blog',
   },
+  // {
+  //   href: '/authors',
+  //   label: 'authors',
+  // },
   {
-    href: '/authors',
-    label: 'authors',
+    href: '/photos',
+    label: 'photos',
   },
   {
     href: '/about',
@@ -36,7 +40,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'Twitter',
   },
   {
-    href: 'mailto:jason@enscribe.dev',
+    href: 'mailto:mdreame@qq.com',
     label: 'Email',
   },
   {

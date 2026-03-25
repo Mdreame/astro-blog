@@ -26,32 +26,20 @@ const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
 ---
 
 <div
-  class="hover:bg-muted/50 rounded-xl border p-4 transition-colors duration-300 ease-in-out"
+  class="relative rounded-xl border p-4 transition-colors duration-300 ease-in-out"
+  style={`background-image: url('${entry.data.image}'); background-size: cover; background-position: center;`}
 >
+  <div class="absolute inset-0 bg-black/50 rounded-xl"></div>
   <Link
     href={`/${entry.collection}/${entry.id}`}
-    class="flex flex-col gap-4 sm:flex-row"
+    class="relative z-10 flex flex-col gap-4 sm:flex-row"
   >
-    {
-      entry.data.image && (
-        <div class="w-full sm:max-w-3xs sm:shrink-0">
-          <Image
-            src={entry.data.image}
-            alt={entry.data.title}
-            width={1200}
-            height={630}
-            class="object-cover"
-          />
-        </div>
-      )
-    }
-
     <div class="grow">
-      <h3 class="mb-1 text-lg font-medium">{entry.data.title}</h3>
-      <p class="text-muted-foreground mb-2 text-sm">{entry.data.description}</p>
+      <h3 class="mb-1 text-lg font-medium text-white">{entry.data.title}</h3>
+      <p class="text-white/80 mb-2 text-sm">{entry.data.description}</p>
 
       <div
-        class="text-muted-foreground mb-2 flex flex-wrap items-center gap-x-2 text-xs"
+        class="text-white/80 mb-2 flex flex-wrap items-center gap-x-2 text-xs"
       >
         {
           authors.length > 0 && (
