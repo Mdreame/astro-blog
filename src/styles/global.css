@@ -83,6 +83,6 @@
   ::backdrop,
   ::file-selector-button {
     @apply border-border outline-ring/50 tracking-tight;
-    letter-spacing: 0.25px;
+    letter-spacing: 0.15px;
   }
 }

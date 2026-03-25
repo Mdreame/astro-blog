@@ -7,8 +7,8 @@ export const SITE: Site = {
   href: 'https://blog.mdreame.space',
   author: 'mdreame',
   locale: 'zh-CN',
-  featuredPostCount: 2,
-  postsPerPage: 5,
+  featuredPostCount: 3,
+  postsPerPage: 10,
 }
 
 export const NAV_LINKS: SocialLink[] = [
@@ -32,11 +32,11 @@ export const NAV_LINKS: SocialLink[] = [
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    href: 'https://github.com/jktrn',
-    label: 'GitHub',
+    href: 'https://t.me/himdreame',
+    label: 'Telegram',
   },
   {
-    href: 'https://twitter.com/enscry',
+    href: 'https://twitter.com/mdreame_xu',
     label: 'Twitter',
   },
   {
@@ -53,6 +53,7 @@ export const ICON_MAP: IconMap = {
   Website: 'lucide:globe',
   GitHub: 'lucide:github',
   LinkedIn: 'lucide:linkedin',
+  Telegram: 'lucide:send',
   Twitter: 'lucide:twitter',
   Email: 'lucide:mail',
   RSS: 'lucide:rss',
