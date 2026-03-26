@@ -46,7 +46,7 @@
 @font-face {
   font-family: 'PingFang SC';
   src: url('/fonts/PingFangSC-Regular.woff2') format('woff2');
-  font-weight: 400;
+  font-weight: 400 900;
   font-style: normal;
   font-display: swap;
 }
@@ -83,6 +83,13 @@
   ::backdrop,
   ::file-selector-button {
     @apply border-border outline-ring/50 tracking-tight;
-    letter-spacing: 0.15px;
+    letter-spacing: 0.375px;
+  }
+
+  strong {
+    background-color: #fff0cd; /* 浅色背景 */
+    color: #1d3557; /* 深色文字 */
+    font-weight: 800;
+    padding: 2px 4px; /* 增加内边距 */
   }
 }
