@@ -227,6 +227,8 @@ const tocSections = await getTOCSections(currentPostId)
       <Content />
     </article>
 
+    <div id="Comments"></div>
+
     {
       (hasChildPosts || isCurrentSubpost) && (
         <SubpostsSidebar
@@ -296,4 +298,17 @@ const tocSections = await getTOCSections(currentPostId)
 
   document.addEventListener('astro:page-load', ensureKatexStyles)
   document.addEventListener('astro:after-swap', ensureKatexStyles)
+</script>
+
+<script>
+  import 'artalk/Artalk.css'
+  import Artalk from 'artalk'
+
+  Artalk.init({
+    el: document.querySelector('#Comments'), // 挂载的 DOM 元素
+    pageKey: '/post/1', // 固定链接
+    pageTitle: '', // 页面标题
+    server: 'http://artalk.mdreame.space', // 后端地址
+    site: 'Mdreame 的博客', // 站点名
+  })
 </script>

@@ -47,6 +47,9 @@ importers:
       '@types/react-dom':
         specifier: 19.0.0
         version: 19.0.0
+      artalk:
+        specifier: ^2.9.1
+        version: 2.9.1(marked@14.1.4)
       astro:
         specifier: 6.0.2
         version: 6.0.2(@types/node@25.5.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.0)(typescript@5.9.3)(yaml@2.8.3)
@@ -1803,6 +1806,11 @@ packages:
   array-iterate@2.0.1:
     resolution: {integrity: sha512-I1jXZMjAgCMmxT4qxXfPXa6SthSoE8h6gkSI9BGGNv8mP8G/v0blc+qFnZu6K42vTOiuME596QaLO0TP3Lk0xg==}
 
+  artalk@2.9.1:
+    resolution: {integrity: sha512-IFo9XqWDalsHy8BsmMA5SSB9bozBa/sBhTm/+O5KwA6DnC95lFKv7C6ScMx/Xa4ue5qSQ7VV5vxRgCh/raohkQ==}
+    peerDependencies:
+      marked: ^14.1.0
+
   astring@1.9.0:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
@@ -2468,6 +2476,11 @@ packages:
 
   markdown-table@3.0.4:
     resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
+
+  marked@14.1.4:
+    resolution: {integrity: sha512-vkVZ8ONmUdPnjCKc5uTRvmkRbx4EAi2OkTOXmfTDhZz3OFqMNBM1oTTWwTr4HY4uAEojhzPf+Fy8F1DWa3Sndg==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   mdast-util-definitions@6.0.0:
     resolution: {integrity: sha512-scTllyX6pnYNZH/AIp/0ePz6s4cZtARxImwoPJ7kS42n+MnVsI4XbnG6d4ibehRIldYMWM2LD7ImQblVhUejVQ==}
@@ -5425,6 +5438,10 @@ snapshots:
 
   array-iterate@2.0.1: {}
 
+  artalk@2.9.1(marked@14.1.4):
+    dependencies:
+      marked: 14.1.4
+
   astring@1.9.0: {}
 
   astro-icon@1.1.5:
@@ -6252,6 +6269,8 @@ snapshots:
   markdown-extensions@2.0.0: {}
 
   markdown-table@3.0.4: {}
+
+  marked@14.1.4: {}
 
   mdast-util-definitions@6.0.0:
     dependencies:
