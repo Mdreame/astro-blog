@@ -227,7 +227,7 @@ const tocSections = await getTOCSections(currentPostId)
       <Content />
     </article>
 
-    <div id="Comments"></div>
+    <!-- <div id="Comments"></div>
     <script>
       import 'artalk/Artalk.css'
       import Artalk from 'artalk'
@@ -236,10 +236,10 @@ const tocSections = await getTOCSections(currentPostId)
         el: document.querySelector('#Comments'), // 挂载的 DOM 元素
         pageKey: '/post/1', // 固定链接
         pageTitle: '', // 页面标题
-        server: 'https://artalk.mdreame.space', // 后端地址
+        server: 'https://artalk.mdreame.space:8080', // 后端地址
         site: 'Mdreame 的博客', // 站点名
       })
-    </script>
+    </script> -->
 
     {
       (hasChildPosts || isCurrentSubpost) && (
@@ -310,4 +310,24 @@ const tocSections = await getTOCSections(currentPostId)
 
   document.addEventListener('astro:page-load', ensureKatexStyles)
   document.addEventListener('astro:after-swap', ensureKatexStyles)
+</script>
+
+<!-- CSS -->
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/artalk/2.9.1/Artalk.css"
+/>
+
+<!-- Artalk -->
+<div id="Comments"></div>
+<script type="module">
+  import Artalk from 'https://esm.sh/artalk@2.9.1'
+
+  Artalk.init({
+    el: '#Comments',
+    pageKey: '/post/1', // 固定链接
+    pageTitle: '', // 页面标题 (留空自动获取)
+    server: 'https://artalk.mdreame.space', // 后端地址
+    site: 'Mdreame 的博客', // 你的站点名
+  })
 </script>
