@@ -1,6 +1,14 @@
 import { getCollection, render, type CollectionEntry } from 'astro:content'
 import { readingTime, calculateWordCountFromHtml } from '@/lib/utils'
 
+function normalizeTag(tag: string): string {
+  return tag.trim()
+}
+
+function getNormalizedTags(post: CollectionEntry<'blog'>): string[] {
+  return (post.data.tags ?? []).map(normalizeTag).filter(Boolean)
+}
+
 export async function getAllAuthors(): Promise<CollectionEntry<'authors'>[]> {
   return await getCollection('authors')
 }
@@ -33,7 +41,7 @@ export async function getAllProjects(): Promise<CollectionEntry<'projects'>[]> {
 export async function getAllTags(): Promise<Map<string, number>> {
   const posts = await getAllPosts()
   return posts.reduce((acc, post) => {
-    post.data.tags?.forEach((tag) => {
+    getNormalizedTags(post).forEach((tag) => {
       acc.set(tag, (acc.get(tag) || 0) + 1)
     })
     return acc
@@ -110,7 +118,8 @@ export async function getPostsByTag(
   tag: string,
 ): Promise<CollectionEntry<'blog'>[]> {
   const posts = await getAllPosts()
-  return posts.filter((post) => post.data.tags?.includes(tag))
+  const normalizedTag = normalizeTag(tag)
+  return posts.filter((post) => getNormalizedTags(post).includes(normalizedTag))
 }
 
 export async function getRecentPosts(
