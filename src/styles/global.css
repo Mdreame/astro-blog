@@ -92,4 +92,8 @@
     font-weight: 800;
     padding: 2px 4px; /* 增加内边距 */
   }
+
+  .giscus, .giscus-frame {
+    grid-column-start: 2;
+  }
 }

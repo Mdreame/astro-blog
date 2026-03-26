@@ -9,6 +9,7 @@ import TOCHeader from '@/components/toc-header.astro'
 import TOCSidebar from '@/components/toc-sidebar.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import Comment from '@/components/comment.astro'
 import Layout from '@/layouts/layout.astro'
 import {
   getAdjacentPosts,
@@ -227,10 +228,11 @@ const tocSections = await getTOCSections(currentPostId)
       <Content />
     </article>
 
-    <p class="col-start-2 flex flex-col gap-y-6 text-center">* * *</p>
+    <Comment class="prose col-start-2 max-w-none"/>
+
 
     <!-- Artalk -->
-    <div id="Comments" client:load  class="col-start-2 flex flex-col gap-y-6 text-center"></div>
+    <!-- <div id="Comments" client:load  class="col-start-2 flex flex-col gap-y-6 text-center"></div>
     <script type="module">
       import Artalk from 'https://esm.sh/artalk@2.9.1'
 
@@ -241,7 +243,7 @@ const tocSections = await getTOCSections(currentPostId)
         server: 'https://artalk.mdreame.space', // 后端地址
         site: 'Mdreame', // 你的站点名
       })
-    </script>
+    </script> -->
     
     {
       (hasChildPosts || isCurrentSubpost) && (
