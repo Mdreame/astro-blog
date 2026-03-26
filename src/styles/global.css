@@ -4,8 +4,8 @@
 
 @theme inline {
   --font-sans:
-  -apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,
-  Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;
+    -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei,
+    Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;
 
   --font-mono:
     PingFang SC, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -87,13 +87,28 @@
   }
 
   strong {
-    background-color: #fff0cd; /* 浅色背景 */
-    color: #1d3557; /* 深色文字 */
+    background-color: #fff0cd;
+    /* 浅色背景 */
+    color: #1d3557;
+    /* 深色文字 */
     font-weight: 800;
-    padding: 2px 4px; /* 增加内边距 */
+    padding: 2px 4px;
+    /* 增加内边距 */
   }
 
-  .giscus, .giscus-frame {
+  /* .giscus, .giscus-frame {
     grid-column-start: 2;
+  } */
+
+  article a[href^="http"]:not([href*="http://localhost:1234/"])::after {
+    content: "↗";
+    font-weight: normal;
+    margin: 4px;
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    text-decoration: none;
+    color: #000;
   }
 }
