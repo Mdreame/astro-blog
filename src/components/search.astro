@@ -44,6 +44,7 @@
   <!-- Dialog -->
   <div class="relative flex justify-center px-4 pt-[20vh]">
     <div
+      id="search-dialog"
       class="w-full max-w-xl overflow-hidden rounded-lg border border-border bg-background shadow-xl"
     >
       <!-- Input Row -->
@@ -181,22 +182,10 @@
 }
 
 <script>
-  const toggle = document.getElementById('search-toggle')!
-  const overlay = document.getElementById('search-overlay')!
-  const backdrop = document.getElementById('search-backdrop')!
-  const searchInput = document.getElementById('search-input') as HTMLInputElement
-  const resultsEl = document.getElementById('search-results')!
-  const emptyEl = document.getElementById('search-empty')!
-  const noResultsEl = document.getElementById('search-no-results')!
-  const historyPanel = document.getElementById('search-history')!
-  const historyList = document.getElementById('search-history-list')!
-  const historyClear = document.getElementById('search-history-clear')!
-
   const HISTORY_KEY = 'search-history'
   const MAX_HISTORY = 3
-  let selectedIndex = -1
 
-  // ── Search History ───────────────────────────────────────────────────────────
+  // ── Helpers (stateless, no DOM refs) ────────────────────────────────────────
 
   function loadHistory(): string[] {
     try {
@@ -218,157 +207,6 @@
     saveHistory(history.slice(0, MAX_HISTORY))
   }
 
-  function renderHistory() {
-    const history = loadHistory()
-    if (!history.length) {
-      historyPanel.classList.add('hidden')
-      return
-    }
-    historyList.innerHTML = history
-      .map(
-        (q) => `
-        <li class="list-none">
-          <button type="button" data-query="${escHtml(q)}"
-            class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm hover:bg-muted transition-colors text-foreground">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              class="shrink-0 text-muted-foreground" aria-hidden="true">
-              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-              <path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>
-            </svg>
-            <span class="truncate">${escHtml(q)}</span>
-          </button>
-        </li>`
-      )
-      .join('')
-    historyPanel.classList.remove('hidden')
-    historyList.querySelectorAll<HTMLButtonElement>('button[data-query]').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const q = btn.dataset.query || ''
-        searchInput.value = q
-        searchInput.dispatchEvent(new Event('input'))
-        searchInput.focus()
-      })
-    })
-  }
-
-  historyClear.addEventListener('click', () => {
-    saveHistory([])
-    historyPanel.classList.add('hidden')
-  })
-
-  // ── Open / Close ────────────────────────────────────────────────────────────
-
-  function openDialog() {
-    overlay.classList.remove('hidden')
-    document.documentElement.style.overflow = 'hidden'
-    renderHistory()
-    requestAnimationFrame(() => searchInput.focus())
-  }
-
-  function closeDialog() {
-    const query = searchInput.value.trim()
-    if (query) addToHistory(query)
-    overlay.classList.add('hidden')
-    document.documentElement.style.overflow = ''
-    searchInput.value = ''
-    resetResults()
-  }
-
-  function resetResults() {
-    emptyEl.classList.remove('hidden')
-    noResultsEl.classList.add('hidden')
-    resultsEl.classList.add('hidden')
-    resultsEl.innerHTML = ''
-    historyPanel.classList.add('hidden')
-    selectedIndex = -1
-  }
-
-  // ── Triggers ─────────────────────────────────────────────────────────────────
-
-  toggle.addEventListener('click', openDialog)
-  backdrop.addEventListener('click', closeDialog)
-
-  document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-      e.preventDefault()
-      openDialog()
-    } else if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
-      closeDialog()
-    }
-  })
-
-  // ── Keyboard navigation inside the dialog ───────────────────────────────────
-
-  searchInput.addEventListener('keydown', (e) => {
-    const items = resultsEl.querySelectorAll<HTMLElement>('li[role="option"]')
-
-    if (e.key === 'ArrowDown') {
-      e.preventDefault()
-      selectedIndex = Math.min(selectedIndex + 1, items.length - 1)
-      updateHighlight(items)
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault()
-      selectedIndex = Math.max(selectedIndex - 1, 0)
-      updateHighlight(items)
-    } else if (e.key === 'Enter') {
-      e.preventDefault()
-      const idx = selectedIndex >= 0 ? selectedIndex : 0
-      const link = items[idx]?.querySelector<HTMLAnchorElement>('a')
-      if (link) {
-        addToHistory(searchInput.value.trim())
-        window.location.href = link.href
-        closeDialog()
-      }
-    }
-  })
-
-  function updateHighlight(items: NodeListOf<HTMLElement>) {
-    items.forEach((item, i) => {
-      const active = i === selectedIndex
-      item.setAttribute('aria-selected', String(active))
-      item.classList.toggle('bg-muted', active)
-      if (active) item.scrollIntoView({ block: 'nearest' })
-    })
-  }
-
-  // ── Search ───────────────────────────────────────────────────────────────────
-
-  searchInput.addEventListener('input', async () => {
-    const query = searchInput.value.trim()
-    if (!query) {
-      // Show history when input is cleared
-      resultsEl.innerHTML = ''
-      resultsEl.classList.add('hidden')
-      noResultsEl.classList.add('hidden')
-      emptyEl.classList.remove('hidden')
-      renderHistory()
-      return
-    }
-
-    historyPanel.classList.add('hidden')
-
-    // Dev mode: pagefind is not available
-    if (!(window as any).pagefind) {
-      resultsEl.innerHTML = `<li class="px-3 py-6 text-center text-sm text-muted-foreground">搜索功能仅在构建版本中可用<br><code class="text-xs opacity-60">pnpm build &amp;&amp; pnpm preview</code></li>`
-      resultsEl.classList.remove('hidden')
-      emptyEl.classList.add('hidden')
-      noResultsEl.classList.add('hidden')
-      return
-    }
-
-    try {
-      const result = await (window as any).pagefind.debouncedSearch(query, { filters: { type: 'post' } })
-      if (!result) return // superseded by a newer search
-
-      const topResults = result.results.slice(0, 8)
-      const data: any[] = await Promise.all(topResults.map((r: any) => r.data()))
-      renderResults(data)
-    } catch (err) {
-      console.error('[Search] Error:', err)
-    }
-  })
-
   function escHtml(str: string): string {
     return str
       .replace(/&/g, '&amp;')
@@ -377,43 +215,231 @@
       .replace(/"/g, '&quot;')
   }
 
-  function renderResults(data: any[]) {
-    selectedIndex = -1
-    emptyEl.classList.add('hidden')
+  // ── Per-page init (re-runs on every View Transition navigation) ──────────────
 
-    if (!data.length) {
-      resultsEl.innerHTML = ''
-      resultsEl.classList.add('hidden')
-      noResultsEl.classList.remove('hidden')
-      return
+  function init() {
+    const toggle = document.getElementById('search-toggle')!
+    const overlay = document.getElementById('search-overlay')!
+    const dialog = document.getElementById('search-dialog')!
+    const searchInput = document.getElementById('search-input') as HTMLInputElement
+    const resultsEl = document.getElementById('search-results')!
+    const emptyEl = document.getElementById('search-empty')!
+    const noResultsEl = document.getElementById('search-no-results')!
+    const historyPanel = document.getElementById('search-history')!
+    const historyList = document.getElementById('search-history-list')!
+    const historyClear = document.getElementById('search-history-clear')!
+
+    if (!toggle || !overlay || !dialog || !searchInput) return
+
+    // TypeScript narrowing doesn't propagate into closures, cast once after guard
+    const _overlay = overlay!
+    const _dialog = dialog!
+    const _input = searchInput!
+    const _results = resultsEl!
+    const _empty = emptyEl!
+    const _noResults = noResultsEl!
+    const _historyPanel = historyPanel!
+    const _historyList = historyList!
+
+    let selectedIndex = -1
+
+    // ── History UI ─────────────────────────────────────────────────────────────
+
+    function renderHistory() {
+      const history = loadHistory()
+      if (!history.length) {
+        historyPanel.classList.add('hidden')
+        return
+      }
+      historyList.innerHTML = history
+        .map(
+          (q) => `
+          <li class="list-none">
+            <button type="button" data-query="${escHtml(q)}"
+              class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm hover:bg-muted transition-colors text-foreground">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="shrink-0 text-muted-foreground" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>
+              </svg>
+              <span class="truncate">${escHtml(q)}</span>
+            </button>
+          </li>`
+        )
+        .join('')
+      historyPanel.classList.remove('hidden')
+      historyList.querySelectorAll<HTMLButtonElement>('button[data-query]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const q = btn.dataset.query || ''
+          searchInput.value = q
+          searchInput.dispatchEvent(new Event('input'))
+          searchInput.focus()
+        })
+      })
     }
 
-    noResultsEl.classList.add('hidden')
-    resultsEl.classList.remove('hidden')
-
-    resultsEl.innerHTML = data
-      .map((item) => {
-        const title = escHtml(item.meta?.title || item.url)
-        const url = item.url
-        const excerpt: string = item.excerpt || ''
-        return `
-        <li role="option" aria-selected="false" class="rounded-md list-none">
-          <a
-            href="${url}"
-            class="flex flex-col gap-0.5 rounded-md px-3 py-2 hover:bg-muted transition-colors block"
-          >
-            <span class="text-sm font-medium text-foreground line-clamp-1">${title}</span>
-            ${excerpt ? `<span class="text-xs text-muted-foreground line-clamp-2 [&_mark]:bg-primary/20 [&_mark]:text-foreground [&_mark]:rounded-sm [&_mark]:px-0.5">${excerpt}</span>` : ''}
-          </a>
-        </li>`
-      })
-      .join('')
-
-    resultsEl.querySelectorAll<HTMLAnchorElement>('a').forEach((a) => {
-      a.addEventListener('click', () => {
-        addToHistory(searchInput.value.trim())
-        closeDialog()
-      })
+    historyClear.addEventListener('click', () => {
+      saveHistory([])
+      historyPanel.classList.add('hidden')
     })
+
+    // ── Open / Close ───────────────────────────────────────────────────────────
+
+    function openDialog() {
+      overlay.classList.remove('hidden')
+      document.documentElement.style.overflow = 'hidden'
+      renderHistory()
+      requestAnimationFrame(() => searchInput.focus())
+    }
+
+    function closeDialog() {
+      const query = searchInput.value.trim()
+      if (query) addToHistory(query)
+      overlay.classList.add('hidden')
+      document.documentElement.style.overflow = ''
+      searchInput.value = ''
+      resetResults()
+    }
+
+    function resetResults() {
+      emptyEl.classList.remove('hidden')
+      noResultsEl.classList.add('hidden')
+      resultsEl.classList.add('hidden')
+      resultsEl.innerHTML = ''
+      historyPanel.classList.add('hidden')
+      selectedIndex = -1
+    }
+
+    // ── Triggers ───────────────────────────────────────────────────────────────
+
+    toggle.addEventListener('click', openDialog)
+
+    // Close when clicking outside the dialog box
+    overlay.addEventListener('mousedown', (e) => {
+      if (!dialog.contains(e.target as Node)) {
+        closeDialog()
+      }
+    })
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        openDialog()
+      } else if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+        closeDialog()
+      }
+    })
+
+    // ── Keyboard navigation ────────────────────────────────────────────────────
+
+    searchInput.addEventListener('keydown', (e) => {
+      const items = resultsEl.querySelectorAll<HTMLElement>('li[role="option"]')
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        selectedIndex = Math.min(selectedIndex + 1, items.length - 1)
+        updateHighlight(items)
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        selectedIndex = Math.max(selectedIndex - 1, 0)
+        updateHighlight(items)
+      } else if (e.key === 'Enter') {
+        e.preventDefault()
+        const idx = selectedIndex >= 0 ? selectedIndex : 0
+        const link = items[idx]?.querySelector<HTMLAnchorElement>('a')
+        if (link) {
+          addToHistory(searchInput.value.trim())
+          window.location.href = link.href
+          closeDialog()
+        }
+      }
+    })
+
+    function updateHighlight(items: NodeListOf<HTMLElement>) {
+      items.forEach((item, i) => {
+        const active = i === selectedIndex
+        item.setAttribute('aria-selected', String(active))
+        item.classList.toggle('bg-muted', active)
+        if (active) item.scrollIntoView({ block: 'nearest' })
+      })
+    }
+
+    // ── Search ─────────────────────────────────────────────────────────────────
+
+    searchInput.addEventListener('input', async () => {
+      const query = searchInput.value.trim()
+      if (!query) {
+        resultsEl.innerHTML = ''
+        resultsEl.classList.add('hidden')
+        noResultsEl.classList.add('hidden')
+        emptyEl.classList.remove('hidden')
+        renderHistory()
+        return
+      }
+
+      historyPanel.classList.add('hidden')
+
+      if (!(window as any).pagefind) {
+        resultsEl.innerHTML = `<li class="px-3 py-6 text-center text-sm text-muted-foreground">搜索功能仅在构建版本中可用<br><code class="text-xs opacity-60">pnpm build &amp;&amp; pnpm preview</code></li>`
+        resultsEl.classList.remove('hidden')
+        emptyEl.classList.add('hidden')
+        noResultsEl.classList.add('hidden')
+        return
+      }
+
+      try {
+        const result = await (window as any).pagefind.debouncedSearch(query, { filters: { type: 'post' } })
+        if (!result) return
+        const topResults = result.results.slice(0, 8)
+        const data: any[] = await Promise.all(topResults.map((r: any) => r.data()))
+        renderResults(data)
+      } catch (err) {
+        console.error('[Search] Error:', err)
+      }
+    })
+
+    function renderResults(data: any[]) {
+      selectedIndex = -1
+      emptyEl.classList.add('hidden')
+
+      if (!data.length) {
+        resultsEl.innerHTML = ''
+        resultsEl.classList.add('hidden')
+        noResultsEl.classList.remove('hidden')
+        return
+      }
+
+      noResultsEl.classList.add('hidden')
+      resultsEl.classList.remove('hidden')
+
+      resultsEl.innerHTML = data
+        .map((item) => {
+          const title = escHtml(item.meta?.title || item.url)
+          const url = item.url
+          const excerpt: string = item.excerpt || ''
+          return `
+          <li role="option" aria-selected="false" class="rounded-md list-none">
+            <a
+              href="${url}"
+              class="flex flex-col gap-0.5 rounded-md px-3 py-2 hover:bg-muted transition-colors block"
+            >
+              <span class="text-sm font-medium text-foreground line-clamp-1">${title}</span>
+              ${excerpt ? `<span class="text-xs text-muted-foreground line-clamp-2 [&_mark]:bg-primary/20 [&_mark]:text-foreground [&_mark]:rounded-sm [&_mark]:px-0.5">${excerpt}</span>` : ''}
+            </a>
+          </li>`
+        })
+        .join('')
+
+      resultsEl.querySelectorAll<HTMLAnchorElement>('a').forEach((a) => {
+        a.addEventListener('click', () => {
+          addToHistory(searchInput.value.trim())
+          closeDialog()
+        })
+      })
+    }
   }
+
+  // Re-run init on every View Transition navigation
+  document.addEventListener('astro:page-load', init)
 </script>
