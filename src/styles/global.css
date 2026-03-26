@@ -27,22 +27,6 @@
   --color-ring: var(--ring);
 }
 
-/* @font-face {
-  font-family: 'Geist';
-  src: url('/fonts/GeistVF.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-} 
-
-@font-face {
-  font-family: 'Geist Mono';
-  src: url('/fonts/GeistMonoVF.woff2') format('woff2-variations');
-  font-weight: 100 900;
-  font-style: normal;
-  font-display: swap;
-} */
-
 @font-face {
   font-family: 'PingFang SC';
   src: url('/fonts/PingFangSC-Regular.woff2') format('woff2');
@@ -91,7 +75,7 @@
   }
 
   strong {
-    background-color: #fff0cd;
+    background-color: #ffca4f;
     /* 浅色背景 */
     color: #1d3557;
     /* 深色文字 */
