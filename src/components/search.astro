@@ -211,6 +211,8 @@
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault()
       openDialog()
+    } else if (e.key === 'Escape' && !overlay.classList.contains('hidden')) {
+      closeDialog()
     }
   })
 
@@ -219,9 +221,7 @@
   searchInput.addEventListener('keydown', (e) => {
     const items = resultsEl.querySelectorAll<HTMLElement>('li[role="option"]')
 
-    if (e.key === 'Escape') {
-      closeDialog()
-    } else if (e.key === 'ArrowDown') {
+    if (e.key === 'ArrowDown') {
       e.preventDefault()
       selectedIndex = Math.min(selectedIndex + 1, items.length - 1)
       updateHighlight(items)
@@ -268,7 +268,7 @@
     }
 
     try {
-      const result = await (window as any).pagefind.debouncedSearch(query)
+      const result = await (window as any).pagefind.debouncedSearch(query, { filters: { type: 'post' } })
       if (!result) return // superseded by a newer search
 
       const topResults = result.results.slice(0, 8)
