@@ -77,6 +77,10 @@
 
 @layer base {
 
+  html {
+    scrollbar-gutter: stable;
+  }
+
   *,
   ::after,
   ::before,

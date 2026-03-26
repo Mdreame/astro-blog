@@ -182,14 +182,14 @@
 
   function openDialog() {
     overlay.classList.remove('hidden')
-    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
     // requestAnimationFrame ensures the element is visible before focusing
     requestAnimationFrame(() => searchInput.focus())
   }
 
   function closeDialog() {
     overlay.classList.add('hidden')
-    document.body.style.overflow = ''
+    document.documentElement.style.overflow = ''
     searchInput.value = ''
     resetResults()
   }
