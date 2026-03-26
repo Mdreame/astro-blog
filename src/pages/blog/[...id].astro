@@ -231,12 +231,12 @@ const tocSections = await getTOCSections(currentPostId)
 
     <!-- Artalk -->
     <div id="Comments" class="col-start-2 flex flex-col gap-y-6 text-center"></div>
-    <script type="module" defer>
+    <script type="module">
       import Artalk from 'https://esm.sh/artalk@2.9.1'
 
       Artalk.init({
         el: '#Comments',
-        pageKey: '/post/1', // 固定链接
+        pageKey: '', // 固定链接
         pageTitle: '', // 页面标题 (留空自动获取)
         server: 'https://artalk.mdreame.space', // 后端地址
         site: 'Mdreame', // 你的站点名
