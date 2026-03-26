@@ -1,11 +1,11 @@
 import type { IconMap, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
-  title: 'mdreame',
+  title: 'Mdreame',
   description:
     '百龄影徂，千载心在。',
   href: 'https://blog.mdreame.space',
-  author: 'mdreame',
+  author: 'Mdreame',
   locale: 'zh-CN',
   featuredPostCount: 3,
   postsPerPage: 10,

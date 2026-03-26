@@ -88,18 +88,6 @@
     grid-column-start: 2;
   } */
 
-  article a[href^="http"]:not([href*="http://localhost:1234/"])::after {
-    content: "↗";
-    font-weight: normal;
-    margin: 4px;
-    font-size: 12px;
-    width: 12px;
-    height: 12px;
-    display: inline-block;
-    text-decoration: none;
-    color: #000;
-  }
-
   /* 给所有http/https链接添加外部链接标识（不适用于相对路径） */
   article a[href^="http://"]:not([href*="https://blog.mdreame.space"]):not(:has(img))::after,
   article a[href^="https://"]:not([href*="https://blog.mdreame.space"]):not(:has(img))::after {
@@ -111,7 +99,7 @@
     height: 12px;
     display: inline-block;
     text-decoration: none;
-    color: #000;
+    color: var(--foreground);
   }
 
   /* 防止在图片链接上显示 */
