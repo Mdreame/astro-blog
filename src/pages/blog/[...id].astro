@@ -230,7 +230,7 @@ const tocSections = await getTOCSections(currentPostId)
     <p class="col-start-2 flex flex-col gap-y-6 text-center">* * *</p>
 
     <!-- Artalk -->
-    <div id="Comments" class="col-start-2 flex flex-col gap-y-6 text-center"></div>
+    <div id="Comments" client:load  class="col-start-2 flex flex-col gap-y-6 text-center"></div>
     <script type="module">
       import Artalk from 'https://esm.sh/artalk@2.9.1'
 
