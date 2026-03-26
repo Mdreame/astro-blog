@@ -4,6 +4,7 @@ import ThemeToggle from '@/components/theme-toggle.astro'
 import { NAV_LINKS, SITE } from '@/consts'
 import { Image } from 'astro:assets'
 import logo from '../../public/static/logo.svg'
+import Search from './search.astro'
 ---
 
 <div>
@@ -31,6 +32,7 @@ import logo from '../../public/static/logo.svg'
         }
       </nav>
       <ThemeToggle transition:persist />
+      <Search />
     </div>
   </div>
 </div>

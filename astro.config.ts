@@ -19,9 +19,12 @@ import type { ExpressiveCodeTheme } from 'rehype-expressive-code'
 
 import tailwindcss from '@tailwindcss/vite'
 
+import pagefind from 'astro-pagefind';
+
+
 export default defineConfig({
   site: 'https://astro-erudite.vercel.app',
-  integrations: [mdx(), react(), sitemap(), icon()],
+  integrations: [mdx(), react(), sitemap(), icon(), pagefind()],
   vite: {
     plugins: [tailwindcss()],
   },
