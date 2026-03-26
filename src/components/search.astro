@@ -105,6 +105,19 @@
           <span>输入关键词开始搜索</span>
         </div>
 
+        <!-- Recent searches -->
+        <div id="search-history" class="hidden p-2">
+          <div class="mb-1 flex items-center justify-between px-2 py-1">
+            <span class="text-xs text-muted-foreground">最近搜索</span>
+            <button
+              id="search-history-clear"
+              type="button"
+              class="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >清除</button>
+          </div>
+          <ul id="search-history-list" class="space-y-0.5"></ul>
+        </div>
+
         <!-- No results state -->
         <div
           id="search-no-results"
@@ -175,19 +188,87 @@
   const resultsEl = document.getElementById('search-results')!
   const emptyEl = document.getElementById('search-empty')!
   const noResultsEl = document.getElementById('search-no-results')!
+  const historyPanel = document.getElementById('search-history')!
+  const historyList = document.getElementById('search-history-list')!
+  const historyClear = document.getElementById('search-history-clear')!
 
+  const HISTORY_KEY = 'search-history'
+  const MAX_HISTORY = 3
   let selectedIndex = -1
+
+  // ── Search History ───────────────────────────────────────────────────────────
+
+  function loadHistory(): string[] {
+    try {
+      return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+    } catch {
+      return []
+    }
+  }
+
+  function saveHistory(items: string[]) {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(items))
+  }
+
+  function addToHistory(query: string) {
+    const trimmed = query.trim()
+    if (!trimmed) return
+    const history = loadHistory().filter((q) => q !== trimmed)
+    history.unshift(trimmed)
+    saveHistory(history.slice(0, MAX_HISTORY))
+  }
+
+  function renderHistory() {
+    const history = loadHistory()
+    if (!history.length) {
+      historyPanel.classList.add('hidden')
+      return
+    }
+    historyList.innerHTML = history
+      .map(
+        (q) => `
+        <li class="list-none">
+          <button type="button" data-query="${escHtml(q)}"
+            class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm hover:bg-muted transition-colors text-foreground">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="shrink-0 text-muted-foreground" aria-hidden="true">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>
+            </svg>
+            <span class="truncate">${escHtml(q)}</span>
+          </button>
+        </li>`
+      )
+      .join('')
+    historyPanel.classList.remove('hidden')
+    historyList.querySelectorAll<HTMLButtonElement>('button[data-query]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const q = btn.dataset.query || ''
+        searchInput.value = q
+        searchInput.dispatchEvent(new Event('input'))
+        searchInput.focus()
+      })
+    })
+  }
+
+  historyClear.addEventListener('click', () => {
+    saveHistory([])
+    historyPanel.classList.add('hidden')
+  })
 
   // ── Open / Close ────────────────────────────────────────────────────────────
 
   function openDialog() {
     overlay.classList.remove('hidden')
     document.documentElement.style.overflow = 'hidden'
-    // requestAnimationFrame ensures the element is visible before focusing
+    renderHistory()
     requestAnimationFrame(() => searchInput.focus())
   }
 
   function closeDialog() {
+    const query = searchInput.value.trim()
+    if (query) addToHistory(query)
     overlay.classList.add('hidden')
     document.documentElement.style.overflow = ''
     searchInput.value = ''
@@ -199,6 +280,7 @@
     noResultsEl.classList.add('hidden')
     resultsEl.classList.add('hidden')
     resultsEl.innerHTML = ''
+    historyPanel.classList.add('hidden')
     selectedIndex = -1
   }
 
@@ -234,6 +316,7 @@
       const idx = selectedIndex >= 0 ? selectedIndex : 0
       const link = items[idx]?.querySelector<HTMLAnchorElement>('a')
       if (link) {
+        addToHistory(searchInput.value.trim())
         window.location.href = link.href
         closeDialog()
       }
@@ -254,9 +337,16 @@
   searchInput.addEventListener('input', async () => {
     const query = searchInput.value.trim()
     if (!query) {
-      resetResults()
+      // Show history when input is cleared
+      resultsEl.innerHTML = ''
+      resultsEl.classList.add('hidden')
+      noResultsEl.classList.add('hidden')
+      emptyEl.classList.remove('hidden')
+      renderHistory()
       return
     }
+
+    historyPanel.classList.add('hidden')
 
     // Dev mode: pagefind is not available
     if (!(window as any).pagefind) {
@@ -320,7 +410,10 @@
       .join('')
 
     resultsEl.querySelectorAll<HTMLAnchorElement>('a').forEach((a) => {
-      a.addEventListener('click', closeDialog)
+      a.addEventListener('click', () => {
+        addToHistory(searchInput.value.trim())
+        closeDialog()
+      })
     })
   }
 </script>
