@@ -17,6 +17,10 @@ import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 import type { ExpressiveCodeTheme } from 'rehype-expressive-code'
 
+import rehypeImageCaption from './src/plugins/rehype-image-caption'
+import remarkDirective from 'remark-directive'
+import remarkGallery from './src/plugins/remark-gallery'
+
 import tailwindcss from '@tailwindcss/vite'
 
 import pagefind from 'astro-pagefind';
@@ -47,6 +51,7 @@ export default defineConfig({
       ],
       rehypeHeadingIds,
       rehypeKatex,
+      rehypeImageCaption,
       [
         rehypeExpressiveCode,
         {
@@ -105,6 +110,6 @@ export default defineConfig({
         },
       ],
     ],
-    remarkPlugins: [remarkMath, remarkEmoji],
+    remarkPlugins: [remarkMath, remarkEmoji, remarkDirective, remarkGallery],
   },
 })
