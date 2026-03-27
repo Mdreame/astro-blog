@@ -270,6 +270,7 @@ const tocSections = await getTOCSections(currentPostId)
 
   <script>
     document.addEventListener('astro:page-load', () => {
+      // ── Scroll-to-top button ─────────────────────────────────
       const scrollToTopButton = document.getElementById('scroll-to-top')
       const footer = document.querySelector('footer')
 
@@ -288,6 +289,67 @@ const tocSections = await getTOCSections(currentPostId)
           )
         })
       }
+    })
+  </script>
+
+  <script>
+    // ── Lightbox ─────────────────────────────────────────────────
+    document.addEventListener('astro:page-load', () => {
+      const article = document.querySelector('article.prose')
+      if (!article) return
+
+      // Create or reuse the dialog element
+      let dialog = document.getElementById('lightbox') as HTMLDialogElement | null
+      if (!dialog) {
+        dialog = document.createElement('dialog')
+        dialog.id = 'lightbox'
+        dialog.setAttribute('aria-modal', 'true')
+        dialog.innerHTML = `
+          <button id="lightbox-close" aria-label="关闭">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+          <figure>
+            <img id="lightbox-img" src="" alt="">
+            <figcaption id="lightbox-caption"></figcaption>
+          </figure>
+        `
+        document.body.appendChild(dialog)
+
+        // Close when clicking outside the figure (backdrop area), on the close button, or on the image itself
+        dialog.addEventListener('click', (e) => {
+          const figure = dialog!.querySelector('figure')
+          const img = dialog!.querySelector('#lightbox-img')
+          const target = e.target as Node
+          if (!figure || !figure.contains(target) || target === img) {
+            dialog!.close()
+          }
+        })
+      }
+
+      const lbImg = dialog.querySelector('#lightbox-img') as HTMLImageElement
+      const lbCaption = dialog.querySelector('#lightbox-caption') as HTMLElement
+
+      // Attach click handlers to all images inside the article
+      article.querySelectorAll('img').forEach((img) => {
+        // Skip images already inside an <a> tag
+        if (img.closest('a')) return
+        img.setAttribute('data-lightbox', '')
+
+        img.addEventListener('click', () => {
+          const figure = img.closest('figure')
+          const caption = figure?.querySelector('figcaption')?.textContent?.trim() ?? ''
+
+          lbImg.src = img.src
+          lbImg.alt = img.alt
+          lbCaption.textContent = caption
+          lbCaption.hidden = !caption
+
+          dialog!.showModal()
+        })
+      })
     })
   </script>
 </Layout>

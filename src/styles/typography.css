@@ -196,7 +196,7 @@
       width: 100%;
       height: auto;
       margin: 0 0 0.5rem;
-      border-radius: 0.375rem;
+      /* border-radius: 0.375rem; */
     }
 
     & figure img {
@@ -204,11 +204,11 @@
       height: auto;
       display: block;
       margin: 0;
-      border-radius: 0.375rem;
+      /* border-radius: 0.375rem; */
     }
 
     & figcaption {
-      @apply text-muted-foreground text-xs text-left mt-1;
+      @apply text-muted-foreground text-xs text-justify mt-1;
     }
   }
 }
