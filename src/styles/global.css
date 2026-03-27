@@ -75,12 +75,12 @@
   }
 
   strong {
-    background-color: #ffca4f;
+    background-color: #4fa9ff78;
     /* 浅色背景 */
     color: #1d3557;
     /* 深色文字 */
     font-weight: 800;
-    padding: 2px 4px;
+    padding: 2px;
     /* 增加内边距 */
   }
 
