@@ -175,15 +175,31 @@
     gap: 0.5rem;
     margin: 1.5rem 0;
 
+    /* un-box the p that markdown wraps images in */
     & > p {
-      margin: 0 0 0.5rem 0;
-      break-inside: avoid;
-      display: block;
+      margin: 0;
+      padding: 0;
     }
 
-    & > p > img,
-    & > p > figure > img,
-    & img {
+    /* keep each figure (img + caption) together as one unbreakable unit */
+    & figure {
+      break-inside: avoid;
+      display: block;
+      /* reset browser default figure margin so column tops align */
+      margin: 0 0 0.5rem;
+    }
+
+    /* standalone imgs (no alt text → no figure wrapper) */
+    & > p > img {
+      break-inside: avoid;
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0 0 0.5rem;
+      border-radius: 0.375rem;
+    }
+
+    & figure img {
       width: 100%;
       height: auto;
       display: block;
@@ -191,12 +207,8 @@
       border-radius: 0.375rem;
     }
 
-    & > p > figure {
-      margin: 0;
-    }
-
     & figcaption {
-      @apply text-muted-foreground text-xs text-center mt-1;
+      @apply text-muted-foreground text-xs text-left mt-1;
     }
   }
 }
